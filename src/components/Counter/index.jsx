@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import styles from './counter.module.scss'
 
 class Counter extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       count: 0,
@@ -10,7 +10,7 @@ class Counter extends Component {
       value: '1',
       valueClick: '',
       hidden: true,
-      independentCount: 0
+      delay: 1000
     }
   }
 
@@ -21,8 +21,6 @@ class Counter extends Component {
 
   changeValue = () => {
     const { count, isAdding, value } = this.state
-    console.log(value)
-    console.log(count)
     if (isAdding) {
       this.setState({ count: count + Number(value) })
       return
@@ -30,45 +28,16 @@ class Counter extends Component {
     this.setState({ count: count - Number(value) })
   }
 
-  // stopClick=() => {
-  //   const { count, isAdding, value,valueClick } = this.state
-  //   if(valueClick){this.setState({
-  //     count: (this.count = clearInterval())
-
-  //   }),
-
   onSelectionChange = () => {
     const value = document.getElementById('text').value
-    console.log(value)
     this.setState({
       value: value
     })
   }
 
-  quantityClicks = () => {
-    const valueQuantity = document.getElementById('quantity').value
-    console.log(valueQuantity)
-    this.setState({
-      valueClick: valueQuantity
-    })
-  }
-
   autoClick = () => {
-    const { count } = this.state
-    console.log(count)
-    this.count = setInterval(this.changeValue, 1000)
-    // this.setState({
-    //   count: ()
-    // if(valueClick){
-    //   this.setState ({
-    //     this.count = clearInterval(this.changeValue)
-    //   })
-
-    // if (valueClick) {
-    //   this.setState({ count: (this.count = clearInterval(this.changeValue)) })
-    //   return
-    // }
-    // })
+    const { delay } = this.state
+    this.count = setInterval(this.changeValue, delay)
   }
 
   hidden = () => {
@@ -76,31 +45,33 @@ class Counter extends Component {
     this.setState({ hidden: !hidden })
   }
 
-  componentDidMount() {
-    this.independentCount = setTimeout(this.start, 1000)
+  componentDidMount () {
+    const { delay } = this.state
+    this.count = setTimeout(this.start, delay)
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
+    const { delay } = this.state
     this.clear()
-    this.independentCount = setTimeout(this.start, 1000)
+    this.count = setTimeout(this.start, delay)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.clear()
   }
 
   start = () => {
-    const { independentCount } = this.state
-    this.setState({ independentCount: independentCount + 1 })
+    const { count } = this.state
+    this.setState({ count: count + 1 })
   }
 
   clear = () => {
-    clearInterval(this.independentCount)
-    this.independentCount = null
+    clearInterval(this.count)
+    this.count = null
   }
 
-  render() {
-    const { count, value, valueClick, hidden, independentCount } = this.state
+  render () {
+    const { count, value, valueClick, hidden } = this.state
     return (
       <article className={styles.container}>
         <h1 className={styles.header}>Вы изменяете значение на: {value} </h1>
@@ -109,12 +80,12 @@ class Counter extends Component {
           <div>
             <button className={styles.setting} onClick={this.hidden}>
               Настройки счетчика (click me):
-          </button>
+            </button>
             <br />
             <div hidden={hidden}>
               <button onClick={this.changeValue} className={styles.button}>
                 изменить шаг
-            </button>
+              </button>
               <input
                 id='text'
                 type='text'
@@ -126,23 +97,14 @@ class Counter extends Component {
               <br />
               <button onClick={this.changeMode} className={styles.button}>
                 изменить значение +/-
-            </button>
+              </button>
               <br />
               <button onClick={this.autoClick} className={styles.button}>
                 auto click {valueClick}
               </button>
-              <input
-                type='text'
-                id='quantity'
-                placeholder='количество кликов'
-                onChange={this.quantityClicks}
-              ></input>
             </div>
           </div>
-          <div>
-            <h1 className={styles.setting}>Самостоятельный счетчик</h1>
-            <p className={styles.content}>{independentCount}</p>
-          </div>
+          <div></div>
         </div>
       </article>
     )
